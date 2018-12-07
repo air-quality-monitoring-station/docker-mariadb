@@ -12,8 +12,8 @@ services:
       - "MYSQL_PASSWORD=cisco"
 
   wordpress:
-    #image: thedifferent/wordpress-alpine
-    build: wordpress/novolume
+    image: thedifferent/wordpress-alpine
+    #build: wordpress/novolume
     depends_on:
       - "db"
     ports:

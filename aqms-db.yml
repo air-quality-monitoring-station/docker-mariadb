@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+
+  db:
+    image: thedifferent/mariadb:gina
+    #build: mariadb
+    networks:
+      - "local"
+      - "dbcon"
+      - "vpn"
+      - "dbgui"
+    ports:
+      - "3306:3306"
+    volumes:
+      - "db-data:/var/lib/mysql"
+    environment:
+      - "MYSQL_ROOT_HOST=%"
+      - "MYSQL_ROOT_PASSWORD_LOCAL=false"
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "WP_GINA_GIT_REPO=${GINA_GIT_REPO}"
+      - "DB_GINA_GIT_USER=${GINA_GIT_USER}"
+      - "DB_GINA_GIT_PASSWD=${GINA_GIT_PASSWD}"
+      - "DB_GINA_INTERVAL=${GINA_INTERVAL}"
+    deploy:
+      resources:
+        #limits:
+        #  cpus: '0.20'
+        #  memory: 512M
+        reservations:
+          cpus: '0.10'
+          memory: 256M
+
+networks:
+  local:
+    driver: overlay
+  dbcon:
+    external:
+      name: aqms-net
+  dbgui:
+    external:
+      name: adminer-net
+  vpn:
+    external:
+      name: openvpn-net
+  rvproxy:
+    external:
+      name: traefik-net
+
+volumes:
+  db-data:
+    driver: local
